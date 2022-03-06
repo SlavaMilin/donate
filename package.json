@@ -1,0 +1,23 @@
+{
+  "name": "donate",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "up": "npm ci",
+    "app": "npm run server:dev & npm run client:dev",
+    "server:dev": "npm run start:dev -w server",
+    "client:dev": "npm run start -w client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SlavaMilin/donate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SlavaMilin/donate/issues"
+  },
+  "homepage": "https://github.com/SlavaMilin/donate#readme",
+  "workspaces": ["client", "server"]
+}
