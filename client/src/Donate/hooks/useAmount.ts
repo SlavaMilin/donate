@@ -29,7 +29,7 @@ export const useAmount = () => {
       prevRate: currency.rate,
     });
 
-    if (isAmountInPresets === true) {
+    if (isAmountInPresets) {
       const presetPosition = presets.indexOf(parseInt(amount));
       const convertedAmount = convertAmountData({
         amount: defaultPresets[presetPosition],
