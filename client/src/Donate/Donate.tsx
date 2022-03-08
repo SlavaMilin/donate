@@ -9,22 +9,20 @@ import {
   TextField,
 } from '@mui/material';
 import { currencies } from 'constants/currencies';
-import { DEFAULT_SUGGESTION } from 'constants/defaultSuggestion';
-import { presets as defaultPresets } from 'constants/presets';
 import { useCreateDonate } from 'hooks/useCreateDonate';
 import { FC } from 'react';
 import { useState } from 'react';
-import { Currency } from 'types/Currency';
-import { convertAmount } from 'utils/convertAmount';
 import { formatAmount } from 'utils/formatAmount';
-import { getRoundCurrency } from 'utils/getRoundCurrency';
+
+import { useAmount } from './hooks/useAmount';
+import { usePresets } from './hooks/usePresets';
 
 export const Donate: FC = () => {
   const defaultCurrency = currencies[0];
+  const [currency, setCurrency] = useState(currencies[0]);
   const { mutate, isLoading: isDonateCreating } = useCreateDonate();
-  const [amount, changeAmount] = useState(DEFAULT_SUGGESTION.toString());
-  const [presets, changePresets] = useState(defaultPresets);
-  const [currency, changeCurrency] = useState(currencies[0]);
+  const { amount, setAmount, convertAmount } = useAmount();
+  const { presets, convertPresets } = usePresets();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,13 +32,13 @@ export const Donate: FC = () => {
   const onInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
     if (value === '' || value === '0') {
-      return changeAmount('');
+      return setAmount('');
     }
     const parsedValue = parseInt(value);
     if (isNaN(parsedValue)) {
       return;
     }
-    changeAmount(parsedValue.toString());
+    setAmount(parsedValue.toString());
   };
 
   const onCurrencyChange = (evt: SelectChangeEvent<string>) => {
@@ -51,44 +49,17 @@ export const Donate: FC = () => {
       return;
     }
 
-    changeCurrency(newCurrency);
-    setAmount(newCurrency);
-    setPresets(newCurrency);
-  };
-
-  const setAmount = (newCurrency: Currency) => {
-    const isAmountInPresets = presets.includes(parseInt(amount));
-
-    let newAmount = convertAmount({
-      amount: parseInt(amount),
-      newRate: newCurrency.rate,
-      prevRate: currency.rate,
+    setCurrency(newCurrency);
+    convertAmount({
+      currency,
+      newCurrency,
+      defaultCurrency,
+      presets,
     });
-
-    if (isAmountInPresets === true) {
-      const presetPosition = presets.indexOf(parseInt(amount));
-      const convertedAmount = convertAmount({
-        amount: defaultPresets[presetPosition],
-        newRate: newCurrency.rate,
-        prevRate: defaultCurrency.rate,
-      });
-      newAmount = getRoundCurrency(convertedAmount);
-    }
-    changeAmount(newAmount.toString());
-  };
-
-  const setPresets = (newCurrency: Currency) => {
-    const newPresets = presets.map((preset) => {
-      const presetPosition = presets.indexOf(preset);
-
-      const convertedAmount = convertAmount({
-        amount: defaultPresets[presetPosition],
-        newRate: newCurrency.rate,
-        prevRate: defaultCurrency.rate,
-      });
-      return getRoundCurrency(convertedAmount);
+    convertPresets({
+      defaultCurrency,
+      newCurrency,
     });
-    changePresets(newPresets);
   };
 
   return (
@@ -99,7 +70,7 @@ export const Donate: FC = () => {
             <Grid item key={`${preset}-amount`} xs={4}>
               <Button
                 variant={preset === parseInt(amount) ? 'contained' : 'outlined'}
-                onClick={() => changeAmount(preset.toString())}
+                onClick={() => setAmount(preset.toString())}
                 sx={{ width: '100%' }}
               >
                 {currency.symbol}
