@@ -10,7 +10,7 @@ export const useCreateDonate = () => {
     {
       onError: (error) => {
         if (error.response?.data?.message) {
-          enqueueSnackbar(error.response?.data?.message, {
+          enqueueSnackbar(error.response.data.message, {
             variant: 'error',
           });
           return;
