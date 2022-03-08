@@ -9,6 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { currencies } from 'constants/currencies';
+import { DEFAULT_SUGGESTION } from 'constants/defaultSuggestion';
 import { presets as defaultPresets } from 'constants/presets';
 import { useCreateDonate } from 'hooks/useCreateDonate';
 import { FC } from 'react';
@@ -17,12 +18,10 @@ import { convertAmount } from 'utils/convertAmount';
 import { formatAmount } from 'utils/formatAmount';
 import { getRoundCurrency } from 'utils/getRoundCurrency';
 
-const defaultSuggestion = 40;
-
 export const Donate: FC = () => {
   const defaultCurrency = currencies[0];
   const { mutate, isLoading: isDonateCreating } = useCreateDonate();
-  const [amount, setAmount] = useState(defaultSuggestion.toString());
+  const [amount, setAmount] = useState(DEFAULT_SUGGESTION.toString());
   const [presets, setPresets] = useState(defaultPresets);
   const [currency, setCurrency] = useState(currencies[0]);
 
