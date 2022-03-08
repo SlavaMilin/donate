@@ -1,14 +1,12 @@
 import { Container, CssBaseline } from '@mui/material';
-import axios from 'axios';
 import { SnackbarProvider } from 'notistack';
+import { FC } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { Donate } from './Donate/Donate';
-const baseUrl = process.env.REACT_APP_BASE_URL || 'http://localhost:4000';
 const queryClient = new QueryClient();
-axios.defaults.baseURL = baseUrl;
 
-export const App = () => {
+export const App: FC = () => {
   return (
     <>
       <CssBaseline />
